@@ -38,6 +38,18 @@ diagonal=extr*sqrt(2);
 
 clear = 0.4;
 
+//roller parametrs
+extr_cl_dist=1.1; // extrusion clearence distance
+cone_radius = 5;
+cone_radius_dwn = 4;
+shrink_wrap = 0.1; // mm thickness
+h_base=7;
+H_roller=diagonal/2+extr_cl_dist+h_base;
+W_roller=diagonal/2+extr_cl_dist+m3_radius;
+rod_offset=W_roller; //(25)
+layer_h=0.4;
+
+
 // motor offset change 24mm - pulley size +2mm offset
 //if (motor_shaft < 24) {
   //motor_offset = 24 ;

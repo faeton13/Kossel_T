@@ -17,8 +17,40 @@ Roller_output=1;
 //1 - for right and lefr rollers plate
 //2 - for assembled
 //3/4 - for right or left only
+//5 - for solid version
 
+///////////////////////////////////////////////////////////////////////////////
+module estop_scr(){
+        translate([5,-(m3_radius+m3_clr)*2,0])
+        intersection() {
+          difference() {
+            translate([h_base/2, W_roller, 0]) 
+              union(){
+                cylinder(r=5, h=extr/2+cone_radius, center=false);
+                rotate([0,90,180]) translate([0,0,m3_radius])
+                  cylinder(r1=extr*0.8,r2=extr*0.4, h=5+h_base/2-m3_radius ,center=false);
+                translate([-m3_radius,0,0]) rotate([0,0,-90])
+                    cube([W_roller,10,extr/2+cone_radius]);
+              }
+            translate([h_base, 1/2, extr/2+5])
+              rotate([0,90,180])
+               cylinder(r=W_roller-cone_radius, h=h_base*2,center=false);
+            translate([h_base+(W_roller-cone_radius)/2+4, (m3_radius+m3_clr)*2, -1])
+              rotate([0,0,90])
+               cylinder(r=W_roller-cone_radius+4, h=h_base*2,center=false);
+          // Adjustable endstop screw.
+          translate([h_base/2, W_roller, -extr/2-m3_radius]) 
+            cylinder(r1=m3_radius, r2=m3_radius, h=extr*2, center=false, $fn=16);
+          translate([h_base/2, W_roller, extr/2]) 
+            cylinder(r=m3_nut_radius, h=4, center=false, $fn=6);
+          translate([-5,W_roller+m3_radius*3,0]) rotate([90,0,90])
+           cylinder(r=m3_radius*5/2, h=extr*2, center=false, $fn=16);
 
+          }     
+        translate ([-5,(cone_radius_dwn) ,0])
+          cube([h_base+5, (W_roller), (W_roller-cone_radius)], center=false);
+        }
+      }
 
 ///////////////////////////////////////////////////////////////////////////////
 module 623_bearings (r1_623,r2_623,t_623,d_623) {
@@ -76,26 +108,12 @@ module roller() {
             rotate([90,0,0]) 
               623_bearings(6+shrink_wrap,6+shrink_wrap,extr*2,5);     
         }
-      
-
-
-        // Mounting surfaces for 623 bearings.
-       rotate([90,0,0]) 623_bearings (6,3,extr/3,0);
-     }
-
-      //extra cutt_off
-      translate([0,-H_roller/2,0])
-        cube ([(W_roller+cone_radius_dwn)*2 ,H_roller, (extr+3)*2], center=true);
-        
-     
-    
-  }
 
         // Attachment for diagonal rods.
         translate([-rod_offset, 0, extr]) {
           rotate([90, 0, 0])
             difference(){
-              union(){
+              #union(){
                 cylinder(r1=9/2 , r2=cone_radius, h=12, center=false, $fn=20);
                 rotate([180,0,45])
                  translate([-cone_radius_dwn,0,-12])
@@ -107,8 +125,29 @@ module roller() {
                  cylinder(r=m3_nut_radius, h=4, center=false, $fn=6);
           }
         }
-      }
+      
+
+
+        // Mounting surfaces for 623 bearings.
+       rotate([90,0,0]) 623_bearings (6,3,extr/3,0);
+     }
+      
+      //extra cutt_off
+      translate([0,-H_roller/2,0])
+        cube ([(W_roller+cone_radius_dwn)*2 ,H_roller, (extr+3)*2], center=true);
+      
+      
      
+    
+   }
+
+  } 
+     
+   if (Roller_output==5) {
+     //one end cutt_off
+      translate([0,-H_roller-1,-extr/2])
+        cube ([(W_roller+cone_radius_dwn)+2 ,(H_roller+1)-h_base , (extr/2)*2], center=false);
+    }  
     
   
 
@@ -117,18 +156,17 @@ module roller() {
     // Inside space for OpenBeam.
     color([1, 0, 0]) translate ([0,-diagonal/2-h_base-extr_cl_dist ,0]) rotate([0, 0, 45])
       cube([extr+extr_cl_dist, extr+extr_cl_dist, 120], center=true);
-    
-    
-    
+        
     // Screw holes.
-    for (z = [0,1,2]) {
+   # for (z = [0,1,2]) {
       for (z2 = [-W_roller,W_roller]){
-        translate([-W_roller*cos(180*z), -10/2-layer_h, ((z-1)*extr/2)]) 
+        translate([-W_roller*cos(180*z), -5/2-layer_h, ((z-1)*extr/2)]) 
           rotate([90, 0, 0])
 	          cylinder(r=(m3_radius+m3_clr), h=80, center=false, $fn=12);
         
       }
     }
+
   }
   // 623zz ball bearings with shrink wrap.
   %rotate([90,0,0]) 623_bearings (5+shrink_wrap,5+shrink_wrap,4,extr/3);
@@ -155,41 +193,26 @@ module roller_left() {
 
 
       // Adjustable endstop screw.
-      translate([5,-(m3_radius+m3_clr)*2,m3_radius])
-      intersection() {
-	      difference(){
-          translate([h_base/2, W_roller, m3_radius]) 
-	          union(){
-             cylinder(r1=4, r2=cone_radius, h=W_roller-cone_radius, center=false);
-             rotate([0,90,180]) translate([0,0,m3_radius])
-               cylinder(r1=extr*0.8,r2=extr*0.4, h=5+h_base/2-m3_radius ,center=false);
-            }
-          translate([h_base, 1/2, W_roller-cone_radius])
-             rotate([0,90,180])
-               cylinder(r=W_roller-cone_radius, h=h_base*2,center=false);
-        }     
-	      translate ([-5,(cone_radius_dwn) ,0])
-          cube([h_base+5, (W_roller), (W_roller-cone_radius)], center=false);
-      }
+      estop_scr();
+      scale([1,1,-1]) estop_scr();
     }
     // Fishline attachment in the front.
     translate([12, -(W_roller+cone_radius_dwn)-1, extr/2+2*m3_radius])
       rotate([90, 0, 180])
        cylinder(r=m3_radius, h=13, center=false, $fn=12);
 
-
-    // Adjustable endstop screw.
-    translate([5,-(m3_radius+m3_clr)*2,0]){
-      #translate([h_base/2, W_roller, -extr/2-m3_radius]) 
-          cylinder(r1=m3_radius, r2=m3_radius, h=extr*2, center=false, $fn=16);
-      translate([h_base/2, W_roller, W_roller-cone_radius]) 
-          cylinder(r=m3_nut_radius, h=4, center=false, $fn=6);
-    }
+#      translate([5+h_base/2,W_roller-(m3_radius+m3_clr)*2,-extr])
+                  // Adjustable endstop screw.
+         // translate([, , ]) 
+            cylinder(r1=m3_radius, r2=m3_radius, h=extr*2, center=false, $fn=16);
+    
+ 
+    
 
     for (x = [0,1,2]) {
       rotate([0,0,90])
         translate([-W_roller*cos(180*x), 0, extr/2*(x-1)]) rotate([90, 0, 0])
-          cylinder(r=m3_nut_radius+clear, h=10, center=true, $fn=12);
+          cylinder(r=m3_nut_radius+clear, h=5, center=true, $fn=12);
     }
   }
 }
@@ -205,7 +228,7 @@ module roller_right() {
     //}
     for (x = [0,1,2]) {
         translate([-W_roller*cos(180*x), 0, extr/2*(x-1)]) rotate([90, 0, 0])
-          cylinder(r=m3_nut_radius+clear, h=10, center=true, $fn=6);
+          cylinder(r=m3_nut_radius+clear, h=5, center=true, $fn=6);
     }
     
     // Avoid scratching the returning fishline.
@@ -234,6 +257,14 @@ if (Roller_output == 3) {
 if (Roller_output == 4) {
   rotate([180,-90,-90]) roller_left();
   }
+
+if (Roller_output == 5) {
+rotate([0,-90,0]){
+rotate([180,0,90]) translate([-H_roller,0,0])
+  roller_left();
+translate([0, H_roller, 0])
+  roller_right();
+}}
 //translate([-23, 0, 19])
 ///translate([0,-H_roller*2,0]) rotate([180, 0, 90]) 
 //rotate([180,-90,-90]) translate([0,5/2*extr,0])
