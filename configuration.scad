@@ -1,6 +1,7 @@
 // OD = outside diameter, corner to corner.
 m3_nut_od = 6.1;
 m3_nut_radius = (m3_nut_od+0.2)/2;
+m3_nut_h=3;
 
 // Major diameter of metric 3mm thread.
 m3_major = 2.85;
@@ -8,6 +9,13 @@ m3_radius = m3_major/2;
 m3_open_radius = 3.2/2;
 m3_cap=4;
 m3_clr=0.2;
+
+m_frame_major = 3.8;
+m_frame_radius=m_frame_major/2;
+m_frame_clr=0.3;
+m_frame_open=m_frame_radius+m_frame_clr*2;
+m_frame_cap=8/2;
+m_frame_nut=8/2;
 
 // NEMA17 stepper motors.
 motor_d=48;
@@ -36,17 +44,23 @@ extr_nut = 11; //5.8 11 for 20x20 extrusion
 extr_corn = (extr - extr_tslot)/2;
 diagonal=extr*sqrt(2);
 
-clear = 0.4;
+clear = 0.35;
+// corner parametrs
+frame_thickness=6;
+bracket = 5;
+frame_type=0; //type 0 solid or 1 for sepparate parts
+radius = thickness+cos(30)*diagonal/2+frame_thickness;
+slot_hole=3;
 
 //roller parametrs
-extr_cl_dist=1.1; // extrusion clearence distance
+extr_clr=0.7; // extrusion clearence distance
 cone_radius = 5;
 cone_radius_dwn = 4;
 shrink_wrap = 0.1; // mm thickness
 h_base=7;
-H_roller=diagonal/2+extr_cl_dist+h_base;
-W_roller=diagonal/2+extr_cl_dist+m3_radius;
-rod_offset=W_roller; //(25)
+H_roller=diagonal/2+extr_clr+h_base;
+W_roller=diagonal/2+extr_clr+m3_radius;
+rod_offset=W_roller+5; //(25)
 layer_h=0.4;
 
 
