@@ -14,8 +14,8 @@ m_frame_major = 3.8;
 m_frame_radius=m_frame_major/2;
 m_frame_clr=0.3;
 m_frame_open=m_frame_radius+m_frame_clr*2;
-m_frame_cap=8/2;
-m_frame_nut=8/2;
+m_frame_cap=(8+m_frame_clr)/2;
+m_frame_nut=(8+m_frame_clr)/2;
 
 // NEMA17 stepper motors.
 motor_d=48;
@@ -44,9 +44,9 @@ extr_nut = 11; //5.8 11 for 20x20 extrusion
 extr_corn = (extr - extr_tslot)/2;
 diagonal=extr*sqrt(2);
 
-clear = 0.35;
+clear = 0.4;
 // corner parametrs
-frame_thickness=6;
+frame_thickness=8; //thickness for frame sheets
 bracket = 5;
 frame_type=0; //type 0 solid or 1 for sepparate parts
 radius = thickness+cos(30)*diagonal/2+frame_thickness;
@@ -58,10 +58,10 @@ cone_radius = 5;
 cone_radius_dwn = 4;
 shrink_wrap = 0.1; // mm thickness
 h_base=7;
-H_roller=diagonal/2+extr_clr+h_base;
+H_roller=diagonal/2+extr_clr*2+h_base;
 W_roller=diagonal/2+extr_clr+m3_radius;
 rod_offset=W_roller+5; //(25)
-layer_h=0.4;
+layer_h=0.35;
 
 
 // motor offset change 24mm - pulley size +2mm offset

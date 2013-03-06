@@ -2,11 +2,11 @@ include <configuration.scad>;
 use<libraries/frame_axis_block.scad>;
 
 //extr=15;
-frame_thickness=6;
-bracket = 5;
-frame_type=0; //type 0 solid or 1 for sepparate parts
+//frame_thickness=6;
+//bracket = 5;
+//frame_type=0; //type 0 solid or 1 for sepparate parts
 
-module corner(h,frame_thickness,frame_type) {
+module corner(extr,h,frame_thickness,frame_type) {
 radius = thickness+cos(30)*diagonal/2+frame_thickness;  
   union(){
   difference() {
@@ -36,7 +36,8 @@ radius = thickness+cos(30)*diagonal/2+frame_thickness;
  
   translate([diagonal/2*i, 0, (h-extr)/2])
    rotate([0, 0, -30*i]) 
-    scale([i,1,1]) frame_axis_block(h+1,diagonal*2,thickness,extr,diagonal,diagonal,diagonal,0);
+    scale([i,1,1]) frame_axis_block(h+1,diagonal*2,thickness,extr,diagonal,frame_type,diagonal,diagonal,0);
+  
     }
 
 
@@ -71,7 +72,7 @@ radius = thickness+cos(30)*diagonal/2+frame_thickness;
 for  (i=[-1,1]) {
       scale([i,1,1])
       rotate([180, 0, -30]) 
-        translate([(radius-frame_thickness), 0, -(h-extr/2)])
+        translate([(radius-frame_thickness), 1, -(h-extr/2)])
          scale([1,-1,1])
           cube([frame_thickness, extr/2, h], center=false);
       }
@@ -80,6 +81,6 @@ for  (i=[-1,1]) {
 }
 
 translate([0, 0, extr/2]) {
-  corner(extr*1.4,frame_thickness,frame_type);
+  corner(extr,extr*1.4,frame_thickness,frame_type);
 % rotate([0, 0, 45]) cube([extr, extr, 10*extr], center=true);  
 }

@@ -18,7 +18,7 @@ ball_joint_diametr=6.8;
 rod_diametr= 6;
 ball_joint_angel=45;
 
-m3_length=35;
+m3_length=37;
 H_nut_holes=H_roller-(m3_length/2-m3_nut_h-2*layer_h);
 
 Roller_output=1;
@@ -54,7 +54,7 @@ module estop_scr(){
         translate([h_base/2, W_roller, -extr/2-m3_radius]) 
           cylinder(r1=m3_radius, r2=m3_radius, h=extr*2, center=false, $fn=16);
         translate([h_base/2, W_roller, extr/2]) 
-          cylinder(r=m3_nut_radius, h=4, center=false, $fn=6);
+          cylinder(r=m3_nut_radius, h=3, center=true, $fn=6);
         translate([-5,W_roller+m3_radius*3,0]) rotate([90,0,90])
           cylinder(r=m3_radius*2, h=extr*2, center=false, $fn=16);
 
@@ -77,9 +77,9 @@ module roller() {
   // OpenBeam.
   // % rotate([0, 0, 45]) cube([extr, extr, 120], center=true);
   difference() {
-    union() {
-      intersection() {
-        union(){
+   
+    intersection() {
+      union(){
         difference() {
           union() {            
               for (z = [0,1,2]) {
@@ -103,10 +103,23 @@ module roller() {
                    }
                  }
                 // Diagonal guide ramps.
+                 
                 translate([W_roller*(-cos(180*z)), -(H_roller), ((z-1)*extr/2)-4]) 
                  scale([cos(180*z),1,1])  
-                   cube([W_roller, H_roller, 8], center=false);
-              }
+                  intersection(){
+                  union(){
+                  rotate([0,0,45])
+                    translate([0,cone_radius_dwn/2,cone_radius_dwn*0.05])
+                      cube([extr, extr, cone_radius_dwn*1.9], center=false);
+                  rotate([0,90,45])
+                    translate([-cone_radius_dwn,3,12]) 
+                      cylinder(r=cone_radius_dwn, h=extr*2,center=true);
+                    }
+                    cube ([W_roller,H_roller,cone_radius_dwn*2],center=false);
+                  }
+                 }
+              
+            
               // Connect guide tubes vertically.     
               scale([1,-1,-1])  
 
@@ -135,19 +148,24 @@ module roller() {
       
       //extra cutt_off
       translate([0,-H_roller/2,0])
-        cube ([(W_roller+cone_radius_dwn)*2 ,H_roller, (extr+3)*2], center=true);    
+        cube ([(W_roller+cone_radius_dwn)*2 ,H_roller, (extr+m3_major)*2], center=true);    
+      
+      translate([0,-H_roller+layer_h*4,0])
+      rotate([0,0,45])
+        cube([(W_roller+cone_radius_dwn*2)*2,(W_roller+cone_radius_dwn*2)*2,extr*4],center=true);
+        //cylinder (r=W_roller+cone_radius_dwn*2, h=extr*3,center=true);  
    }
 
-  } 
+   
      
     
   
 
     // M3 screws for 623 bearings.
-    rotate([90,0,0]) 623_bearings (m3_radius+m3_clr ,m3_radius,extr*3,-extr);
+    rotate([90,0,0]) 623_bearings (m3_radius ,m3_radius,extr*3,-extr);
     // Inside space for OpenBeam.
-    color([1, 0, 0]) translate ([0,-diagonal/2-h_base-extr_clr ,0]) rotate([0, 0, 45])
-      cube([extr+extr_clr, extr+extr_clr, 120], center=true);
+    color([1, 0, 0]) translate ([0,-diagonal/2-h_base-extr_clr*2 ,0]) rotate([0, 0, 45])
+      cube([extr+extr_clr*2, extr+extr_clr*2, 120], center=true);
         
 
 
@@ -172,16 +190,16 @@ module roller() {
     rotate([90, 0, 0])
       difference(){
         union(){
-          cylinder(r1=9/2 , r2=cone_radius, h=10, center=false, $fn=20);
-            rotate([180,180,45])
+          cylinder(r1=cone_radius_dwn , r2=6, h=10, center=false, $fn=20);
+            rotate([180,180,80])
               
               translate([-cone_radius_dwn,0,0])
-                cube([cone_radius_dwn*2, rod_offset*0.7, 10], center=false);
+                cube([cone_radius_dwn*2, rod_offset*0.8, h_base], center=false);
         }
         translate([0, 0, -1])
           cylinder(r=(m3_radius+m3_clr), h=25, center=false, $fn=12);
         translate([0, 0, 9])
-          cylinder(r=m3_nut_radius, h=4, center=false, $fn=6);
+          cylinder(r=m3_nut_radius+clear, h=4, center=true, $fn=6);
       }
   }
 
@@ -195,16 +213,22 @@ module roller_left() {
      rotate([0,0,90]) roller();
 
      // Fishline attachment in the front base
-    translate([12, -(W_roller+cone_radius_dwn), extr/2+2*m3_radius]) 
-     rotate([90, 0, -0])
-      scale([1,1,-1]) {
-        difference(){
-          cylinder(r=cone_radius_dwn , h=12, center=false, $fn=12);
-          translate([cone_radius_dwn,-cone_radius_dwn-m3_radius,-1/2]) 
-             rotate([0,0,90]) 
-               cube ([cone_radius_dwn,cone_radius_dwn*2,10+1]);
-        } 
-     # translate([-12,0,0]) cube([12,cone_radius_dwn,12]); //check
+    intersection(){  
+      translate([12, -(W_roller+cone_radius_dwn), extr/2+2*m3_radius]) 
+       rotate([90, 0, -0])
+        scale([1,1,-1]) {
+          difference(){
+            cylinder(r=cone_radius_dwn , h=12, center=false, $fn=12);
+            translate([cone_radius_dwn,-cone_radius_dwn-m3_radius,-1/2]) 
+               rotate([0,0,90]) 
+                 cube ([cone_radius_dwn,cone_radius_dwn*2,10+1]);
+          } 
+          translate([-12,0,0]) cube([12,cone_radius_dwn,12]); //check
+        }
+      translate([H_roller,0,0])
+        rotate([0,0,45])
+          cube([(W_roller+cone_radius_dwn*2)*2,(W_roller+cone_radius_dwn*2)*2,extr*3],center=true);
+
     }
 
 
@@ -218,7 +242,7 @@ module roller_left() {
        cylinder(r=m3_radius, h=13, center=false, $fn=12);
 
       translate([5+h_base/2,W_roller-(m3_radius+m3_clr)*2,-extr])
-                  // Adjustable endstop screw.
+      // Adjustable endstop screw.
          // translate([, , ]) 
             cylinder(r1=m3_radius, r2=m3_radius, h=extr*2, center=false, $fn=16);
     
@@ -226,7 +250,7 @@ module roller_left() {
     
 
    rotate([0,0,90])
-    #for (x = [0,1,2]) {
+    for (x = [0,1,2]) {
         translate([-W_roller*cos(180*x), 0, ((x-1)*extr/2)]) 
           rotate([90, 0, 0]) 
             {
@@ -243,7 +267,7 @@ module roller_right() {
     roller();
     
    rotate([0,0,0])
-    #for (x = [0,1,2]) {
+    for (x = [0,1,2]) {
         translate([-W_roller*cos(180*x), 0, ((x-1)*extr/2)]) 
           rotate([90, 0, 0]) 
             {
@@ -258,15 +282,16 @@ module roller_right() {
 //          cylinder(r=m3_nut_radius+clear, h=H_nut_holes, center=true, $fn=6);
 //    }
     
-    // Avoid scratching the returning fishline.
-    //stranslate([-35, 5, diagonal/2]) rotate([0, 0, 45])
-      //cube([20, 20, 20], center=true);
+     //Avoid scratching the returning fishline.
+     translate([-rod_offset-10, -H_roller+h_base, extr])
+       rotate([0, 0, 45])
+        cube([20, 20, 6*2], center=true);
   }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 if (Roller_output == 1) {
-  rotate([180,-90,-90]) translate([0,(rod_offset+cone_radius)*2,0])
+  rotate([180,-90,-90]) translate([0,(rod_offset+cone_radius+2)*2,0])
     roller_left();
   rotate([-90,0,0]) roller_right();
 }

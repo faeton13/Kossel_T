@@ -23,14 +23,14 @@ module tensioner_608() {
         translate([0, -11, 11])
           cube([18, 22, 22], center=true);
         rotate([0, 90, 0])
-          cylinder(r=12, h=8, center=true, $fn=60);
+          cylinder(r=12+clear, h=9, center=true, $fn=60);
       }
       rotate([0, 90, 0]) 
         cylinder(r=7, h=14, center=true, $fn=24);
     }
     rotate([0, 90, 0]) {
-      cylinder(r=11, h=6.8, center=true);
-      cylinder(r=4, h=18, center=true, $fn=24);
+      cylinder(r=11, h=7+clear, center=true);
+      cylinder(r=4+clear, h=18, center=true, $fn=24);
     }
     
 //fillament holes
