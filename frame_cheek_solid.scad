@@ -14,7 +14,7 @@ double_frame=1; //put 1 to enable dual_frame option
 estp_out = 15; //distance between lower frame and endstop hole(works only if dual_frame on)
 h_tensioner=22;
 
-frame_cheek_output=1;
+frame_cheek_output=12;
 
 //frame cheek output:
 //1 - for sqear tube version assembled
@@ -31,7 +31,7 @@ module frame_cheek(double_frame,estp_sw)
  for (i=[-1,1])
   difference ()  {
     union () {
-      frame_axis_block(h_up_frame, w_up_frame, thickness, extr, diagonal, frame_type, extr*0.9, extr/2,m_frame_open*2);
+      frame_axis_block(h_up_frame, w_up_frame, thickness, extr, diagonal, frame_type, extr*0.9, extr/2,m_frame_open*2,layer_h);
         if (frame_type==1){
           if (double_frame==1) { //small addon to parts width in oder to fit endstop under lower frame if "dual frame" is on
             if (estp_sw==1) {
@@ -179,7 +179,8 @@ difference() {
                      cylinder(r=thickness+3*clear,h=h_up_frame*2, center=true, $fn=3);
               }
 /// space for extrusion cutt off              
-              rotate([0,0,45])  cube ([extr+extr_clr,extr+extr_clr,h_up_frame*2 ], center=true);
+              rotate([0,0,45])
+                cube ([extr+extr_clr,extr+extr_clr,h_up_frame*2 ], center=true);
   for(i=[-1,1]) {
   translate([-2/2,0,-h_up_frame])
    rotate(270,0,0)
@@ -253,7 +254,7 @@ difference() {
     translate ([(diagonal/2+thickness/2)*a,extr*0.4,-h_up_frame ])
       rotate([0,0,-90]) //rotate triangels around z-axis
         cylinder(r=extr*0.2, h=h_up_frame*2 , $fn=3);
-  if (frame_type!=1)      
+  if (frame_type==0) {     
    rotate ([0,0,60]) 
           translate ([0,-(radius-frame_thickness/2+6/2),h_up_frame/2-15/2+clear])
           cube([22*2,6+frame_thickness,15],center=true);   
@@ -266,6 +267,7 @@ difference() {
       rotate([0,90,0])
             cylinder(r=1.3, h=50, center=false, $fn=60);
           }
+  }
   }
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////

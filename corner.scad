@@ -36,7 +36,7 @@ radius = thickness+cos(30)*diagonal/2+frame_thickness;
  
   translate([diagonal/2*i, 0, (h-extr)/2])
    rotate([0, 0, -30*i]) 
-    scale([i,1,1]) frame_axis_block(h+1,diagonal*2,thickness,extr,diagonal,frame_type,diagonal,diagonal,0);
+    scale([i,1,1]) frame_axis_block(h+1,diagonal*2,thickness,extr,diagonal,frame_type,diagonal,diagonal,0,layer_h);
   
     }
 

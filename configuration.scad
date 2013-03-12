@@ -29,7 +29,7 @@ motor_height = 15; // mm bracket height
 motor_length = 12; // mm bracket length
 motor_screws_height = (motor_width - motor_screws) / 2;
 motor_shaft = 30; // mm from motor face to OpenBeam center
-motor_thickness = 5; // mm bracket thickness
+motor_thickness = 6; // mm bracket thickness
 //height = 2*extr + motor_width;
 //diagonal = extr*sqrt(2);
 motor_offset = motor_shaft+2;
@@ -46,9 +46,9 @@ diagonal=extr*sqrt(2);
 
 clear = 0.4;
 // corner parametrs
-frame_thickness=8; //thickness for frame sheets
+frame_thickness=6; //thickness for frame sheets
 bracket = 5;
-frame_type=0; //type 0 solid or 1 for sepparate parts
+frame_type=10; //type 0 solid. 10 for solid with mottors on the top or 1 for sepparate parts
 radius = thickness+cos(30)*diagonal/2+frame_thickness;
 slot_hole=3;
 
@@ -62,14 +62,6 @@ H_roller=diagonal/2+extr_clr*2+h_base;
 W_roller=diagonal/2+extr_clr+m3_radius;
 rod_offset=W_roller+5; //(25)
 layer_h=0.35;
-
-
-// motor offset change 24mm - pulley size +2mm offset
-//if (motor_shaft < 24) {
-  //motor_offset = 24 ;
-  //}
-  //else  {motor_offset = 24;
-  //}
 
 //dimmensions calculations for frame_motor (some trigonometry)
 

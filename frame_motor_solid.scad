@@ -8,7 +8,8 @@ h_motor_frame = motor_d;
 w_motor_frame = w_fm+10;
 //diagonal = extr*sqrt(2);
 
-frame_motor_output=11;
+
+frame_motor_output=12;
 
 //frame cheek output:
 //1 - for sqear tube version assembled
@@ -25,7 +26,7 @@ frame_motor_output=11;
 module frame_motor() {
   difference() {
      union() {
-        frame_axis_block(h_motor_frame, w_motor_frame, thickness, extr, diagonal, frame_type, extr*1.1, extr/3,m_frame_open*2);
+        frame_axis_block(h_motor_frame, w_motor_frame, thickness, extr, diagonal, frame_type, extr*1.1, extr/3,m_frame_open*2,layer_h);
 
 	      if (frame_type==1)
           intersection() {
@@ -94,6 +95,7 @@ difference() {
               rotate ([0,0,-30*i])
                 scale ([i,1,1])
                   frame_motor();  
+            
           }
   translate ([0,0,-h_motor_frame/2+extr/2])
     corner(extr,h_motor_frame,frame_thickness,frame_type);
@@ -137,7 +139,7 @@ difference() {
             translate([0,diagonal/2,0])
               rotate([90,0,180])
                 teardrop(diagonal, 13, true, truncate = true);
-            translate([0,W_roller+extr/2,h_motor_frame/2])
+            translate([0,W_roller+extr/2,0])
              cube([diagonal,extr,h_motor_frame+5], center=true);    
 //screw holes
 if (h_motor_frame<(extr*1.5)){
@@ -176,8 +178,20 @@ else {
       rotate([0,0,-90]) //rotate triangels around z-axis
         cylinder(r=extr*0.2, h=h_motor_frame*2 , $fn=3);
 
-  
-
+if (frame_type==10)  {    
+  #rotate ([0,0,60]) 
+    translate ([0,-(radius-frame_thickness/2+6/2),h_motor_frame/2-15/2+clear])
+      cube([22*2,6+frame_thickness,15],center=true);   
+  // HoneyWell ZM micro switch.
+  #rotate ([0,0,-30]) { 
+    translate([-5, -2+9.5/2, h_motor_frame/2-(m3_open_radius+2)])
+      rotate([0,90,0])
+        cylinder(r=1.3, h=50, center=false, $fn=60);
+    translate([-5, -2-9.5/2, h_motor_frame/2-(m3_open_radius+2)]) 
+      rotate([0,90,0])
+        cylinder(r=1.3, h=50, center=false, $fn=60);
+  }  
+}
   }
 }
 
