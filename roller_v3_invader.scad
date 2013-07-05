@@ -12,7 +12,7 @@ include <configuration.scad>;
 //rod_offset=W_roller; //(25)
 //layer_h=0.4;
 
- 
+L_roller=20;
 h_ball_joint=9;
 ball_joint_diametr=6.8;
 rod_diametr= 6;
@@ -37,11 +37,11 @@ module estop_scr(){
       difference() {
         translate([h_base/2, W_roller, 0]) 
           union(){
-            cylinder(r=5, h=extr/2+cone_radius, center=false);
+            cylinder(r=5, h=L_roller/2+cone_radius, center=false);
             rotate([0,90,180]) translate([0,0,m3_radius])
-              cylinder(r1=extr*0.8,r2=extr*0.4, h=5+h_base/2-m3_radius ,center=false);
+              cylinder(r1=L_roller*0.8,r2=L_roller*0.4, h=5+h_base/2-m3_radius ,center=false);
             translate([-m3_radius,0,0]) rotate([0,0,-90])
-              cube([W_roller,10,extr/2+cone_radius]);
+              cube([W_roller,10,L_roller/2+cone_radius]);
             
           }
         translate([h_base, 1/2, extr/2+5])
@@ -51,16 +51,16 @@ module estop_scr(){
           rotate([0,0,90])
             cylinder(r=W_roller-cone_radius+4, h=h_base*2,center=false);
         // Adjustable endstop screw.
-        translate([h_base/2, W_roller, -extr/2-m3_radius]) 
+        translate([h_base/2, W_roller, -L_roller/2-m3_radius]) 
           cylinder(r1=m3_radius, r2=m3_radius, h=extr*2, center=false, $fn=16);
-        translate([h_base/2, W_roller, extr/2]) 
+        translate([h_base/2, W_roller, L_roller/2]) 
           cylinder(r=m3_nut_radius, h=3, center=true, $fn=6);
         translate([-5,W_roller+m3_radius*3,0]) rotate([90,0,90])
-          cylinder(r=m3_radius*2, h=extr*2, center=false, $fn=16);
+          cylinder(r=m3_radius*2, h=L_roller*2, center=false, $fn=16);
 
       }     
       translate ([-5,(cone_radius_dwn) ,0])
-        cube([h_base+5, (W_roller), (W_roller-cone_radius)], center=false);
+        cube([h_base+5,  (W_roller), (L_roller-cone_radius*2)], center=false);
     }
 }
 
@@ -68,7 +68,7 @@ module estop_scr(){
 module 623_bearings (r1_623,r2_623,t_623,d_623) {
   for (i=[0,1,2]){
     translate ([0,0,h_base-5.8])
-      rotate ([0,45*(cos(180*i)),0]) translate([0, extr*(i-1), 1*d_623])
+      rotate ([0,45*(cos(180*i)),0]) translate([0, L_roller*(i-1), 1*d_623])
         cylinder(r1=r1_623, r2=r2_623, h=t_623, center=false, $fn=12);
   } 
 }
@@ -88,14 +88,14 @@ module roller() {
                   rotate([90, 0, 0])
                   { 
                    //Base
-                   translate([0, (u*extr/3), 0])
+                   translate([0, (u*L_roller/3), 0])
                     difference() {             
                        cylinder(h=h_base, r=W_roller, center=false, $fn=35);
                        translate ([extr, ((u)*extr/2)*1.5,h_base/2])
                          cylinder(r=extr*0.9, h=h_base+5,center=true, $fn=12);
                     }                
                    // Screw guide tubes.
-                   translate([W_roller*(-cos(180*z)), ((z-1)*extr/2), 0]) 
+                   translate([W_roller*(-cos(180*z)), ((z-1)*L_roller/2), 0]) 
                      cylinder(r1=cone_radius+0.5, r2= cone_radius_dwn , h=H_roller, center=false);
               //     translate([W_roller, ((z-1)*extr/2), 0])
                 //     cylinder(r1=cone_radius+0.5, r2= cone_radius_dwn , h=H_roller , center=false);
@@ -104,7 +104,7 @@ module roller() {
                  }
                 // Diagonal guide ramps.
                  
-                translate([W_roller*(-cos(180*z)), -(H_roller), ((z-1)*extr/2)-4]) 
+                translate([W_roller*(-cos(180*z)), -(H_roller), ((z-1)*L_roller/2)-4]) 
                  scale([cos(180*z),1,1])  
                   intersection(){
                   union(){
@@ -123,12 +123,12 @@ module roller() {
               // Connect guide tubes vertically.     
               scale([1,-1,-1])  
 
-              translate([-W_roller-cone_radius_dwn , 0, -extr/2])
-                cube([W_roller/2 , H_roller*0.6 , extr], center=false);
+              translate([-W_roller-cone_radius_dwn , 0, -L_roller/2])
+                cube([W_roller/2 , H_roller*0.6 , L_roller], center=false);
             }        
               if (Roller_output > 4) {
              //one end cutt_off
-                translate([0,-H_roller-1,-extr/2])
+               translate([0,-H_roller-1,-extr/2])
                   cube ([(W_roller+cone_radius_dwn)+2 ,(H_roller+1)-h_base , (extr/2)*2], center=false);
               }  
               // Space for 623 bearings with shrink wrap.
@@ -148,7 +148,7 @@ module roller() {
       
       //extra cutt_off
       translate([0,-H_roller/2,0])
-        cube ([(W_roller+cone_radius_dwn)*2 ,H_roller, (extr+m3_major)*2], center=true);    
+        cube ([(W_roller+cone_radius_dwn)*2 ,H_roller, (L_roller+m3_major)*2], center=true);    
       
       translate([0,-H_roller+layer_h*4,0])
       rotate([0,0,45])
@@ -186,7 +186,36 @@ module roller() {
   %rotate([90,0,0]) 623_bearings (5+shrink_wrap,5+shrink_wrap,4,extr/3);
         
   // Attachment for diagonal rods.
-  translate([-rod_offset, 0, extr]) {
+if(Magneto==1)
+
+intersection(){
+  translate([-rod_offset, 0, L_roller]) {
+    rotate([90, 0, 0])
+      difference(){
+        union(){
+          intersection(){
+            rotate([180,180,45])
+              translate([-cone_radius_dwn-3,-5,0])
+                cube([cone_radius_dwn*3, rod_offset-2, h_base+m_frame_nut], center=false);    
+            rotate([180,180,90])    
+              translate([-cone_radius_dwn,-5,0])
+                cube([cone_radius_dwn*3, rod_offset-2, h_base+m_frame_nut], center=false);    
+          
+          }
+        }
+        rotate([0,90,45])  {
+           translate([-5, -2, -25])
+   #       cylinder(r=(m_frame_radius), h=50, center=false, $fn=12);
+           translate([-5, -2, 10])
+   #       cylinder(r=m_frame_nut+clear, h=10, center=true, $fn=6);
+        }
+      }
+  }
+  cube ([W_roller*2+rod_offset,H_roller*3,45],center=true);
+}
+ 
+else  
+  translate([-rod_offset, 0, L_roller]) {
     rotate([90, 0, 0])
       difference(){
         union(){
@@ -214,17 +243,18 @@ module roller_left() {
 
      // Fishline attachment in the front base
     intersection(){  
-      translate([12, -(W_roller+cone_radius_dwn), extr/2+2*m3_radius]) 
+      for (i=[1,-1]) {
+      translate([12, -(W_roller+cone_radius_dwn), i*(L_roller/2+2*m3_radius)]) 
        rotate([90, 0, -0])
         scale([1,1,-1]) {
           difference(){
             cylinder(r=cone_radius_dwn , h=12, center=false, $fn=12);
-            translate([cone_radius_dwn,-cone_radius_dwn-m3_radius,-1/2]) 
+            translate([cone_radius_dwn*i,-cone_radius_dwn-m3_radius,-1/2]) 
                rotate([0,0,90]) 
                  cube ([cone_radius_dwn,cone_radius_dwn*2,10+1]);
           } 
-          translate([-12,0,0]) cube([12,cone_radius_dwn,12]); //check
-        }
+          translate([-12,(i-1)/2*cone_radius_dwn,0]) cube([12,cone_radius_dwn,12]); //check
+        }}
       translate([H_roller,0,0])
         rotate([0,0,45])
           cube([(W_roller+cone_radius_dwn*2)*2,(W_roller+cone_radius_dwn*2)*2,extr*3],center=true);
@@ -237,21 +267,27 @@ module roller_left() {
       scale([1,1,-1]) estop_scr();
     }
     // Fishline attachment in the front.
-    translate([12, -(W_roller+cone_radius_dwn)-1, extr/2+2*m3_radius])
+    translate([12, -(W_roller+cone_radius_dwn)-1, L_roller/2+2*m3_radius])
       rotate([90, 0, 180])
        cylinder(r=m3_radius, h=13, center=false, $fn=12);
+    translate([12, -(W_roller+cone_radius_dwn)-1, -(L_roller/2+2*m3_radius)])
+      rotate([90, 0, 180])
+       cylinder(r=m3_radius, h=13, center=false, $fn=12);
+
 
       translate([5+h_base/2,W_roller-(m3_radius+m3_clr)*2,-extr])
       // Adjustable endstop screw.
          // translate([, , ]) 
             cylinder(r1=m3_radius, r2=m3_radius, h=extr*2, center=false, $fn=16);
-    
-   
+    rotate([0,0,90])
+       translate([-rod_offset-10, -H_roller+h_base, L_roller])
+           rotate([0, 0, 45])
+              cube([extr, extr, 6*2], center=true);
     
 
    rotate([0,0,90])
     for (x = [0,1,2]) {
-        translate([-W_roller*cos(180*x), 0, ((x-1)*extr/2)]) 
+        translate([-W_roller*cos(180*x), 0, ((x-1)*L_roller/2)]) 
           rotate([90, 0, 0]) 
             {
               translate([0, 0, (H_nut_holes+layer_h)])
@@ -268,7 +304,7 @@ module roller_right() {
     
    rotate([0,0,0])
     for (x = [0,1,2]) {
-        translate([-W_roller*cos(180*x), 0, ((x-1)*extr/2)]) 
+        translate([-W_roller*cos(180*x), 0, ((x-1)*L_roller/2)]) 
           rotate([90, 0, 0]) 
             {
               translate([0, 0, (H_nut_holes+layer_h)])
@@ -283,15 +319,17 @@ module roller_right() {
 //    }
     
      //Avoid scratching the returning fishline.
-     translate([-rod_offset-10, -H_roller+h_base, extr])
+     translate([-rod_offset-10, -H_roller+h_base, L_roller])
        rotate([0, 0, 45])
-        cube([20, 20, 6*2], center=true);
+        cube([extr, extr, 6*2], center=true);
   }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
+echo ("carriage_offset",  ((ball_D/2+12)/sqrt(2) +(rod_offset-2)));
+
 if (Roller_output == 1) {
-  rotate([180,-90,-90]) translate([0,(rod_offset+cone_radius+2)*2,0])
+  rotate([0,-90,-90]) translate([0,(rod_offset+cone_radius+2)*3/2,0])
     roller_left();
   rotate([-90,0,0]) roller_right();
 }

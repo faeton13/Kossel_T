@@ -14,7 +14,7 @@ double_frame=1; //put 1 to enable dual_frame option
 estp_out = 15; //distance between lower frame and endstop hole(works only if dual_frame on)
 h_tensioner=22;
 
-frame_cheek_output=12;
+frame_cheek_output=13;
 
 //frame cheek output:
 //1 - for sqear tube version assembled
@@ -165,10 +165,10 @@ difference() {
                   cylinder(r=extr*0.4, h=h_up_frame , $fn=3);
   
 }
-        rotate([0,0,127])
-          translate([W_roller+thickness+9,0,-(h_up_frame-thickness*2)/2])
-            //m3_screw hole
-             cylinder(r=m3_open_radius,h=h_up_frame*2,center=true,$fn=16);
+//m3_screw hole
+        rotate([0,0,123])
+          translate([W_roller+thickness+7.5, 1, -(h_up_frame-thickness*2)/2])
+            % cylinder(r=m3_open_radius+1/4,h=h_up_frame*2,center=true,$fn=16);
 
 
 /// V-slots for tensioners
@@ -277,7 +277,13 @@ module tensioner() {
  for (i=[-1,1]) {
   union(){
     difference(){
-      cylinder(r=W_roller+cone_radius_dwn+extr_clr/2+thickness,h=h_tensioner,center=true);
+      union(){
+        cylinder(r=W_roller+cone_radius_dwn+extr_clr/2+thickness,h=h_tensioner,center=true);
+        translate([0,W_roller+thickness+13,-4]) 
+          rotate([0,180,(90+35)]) 
+            tensioner_608();
+      }
+      
       cylinder(r=W_roller+cone_radius_dwn+extr_clr/2+0*clear,h=h_tensioner+4,center=true);
       rotate([0,0,-45])
           translate ([0,-(W_roller+cone_radius_dwn+extr_clr+thickness),0])
@@ -285,20 +291,14 @@ module tensioner() {
       rotate([0,0,45])
           translate ([0,-(W_roller+cone_radius_dwn+extr_clr+thickness),0])
             cube([(W_roller+cone_radius_dwn+extr_clr+thickness)*2,2*(W_roller+cone_radius_dwn+extr_clr+thickness),h_tensioner+4],center=true);
-       translate([0,W_roller+cone_radius+extr_clr+thickness+3/2,0])
-         cube([diagonal,thickness*2,40],center=true);
-      translate([0,W_roller+cone_radius+thickness+extr_clr,-4]) 
-        rotate([0,90,90]) 
-          cylinder (r=4+clear,h=18+4,center=true,$fn=32);
+     
     }
     rotate([0,0,145*i])
       translate ([0,-(W_roller+cone_radius/2),0])
         rotate([0,0,30])
           cylinder(r=thickness,h=h_tensioner, center=true, $fn=3);      
 
-    translate([0,W_roller+thickness+8,-4]) 
-      rotate([0,180,90]) 
-        tensioner_608();
+    
   }
 }
 }

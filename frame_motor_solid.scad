@@ -9,7 +9,7 @@ w_motor_frame = w_fm+10;
 //diagonal = extr*sqrt(2);
 
 
-frame_motor_output=12;
+frame_motor_output=13;
 
 //frame cheek output:
 //1 - for sqear tube version assembled
@@ -26,7 +26,7 @@ frame_motor_output=12;
 module frame_motor() {
   difference() {
      union() {
-        frame_axis_block(h_motor_frame, w_motor_frame, thickness, extr, diagonal, frame_type, extr*1.1, extr/3,m_frame_open*2,layer_h);
+        frame_axis_block(h_motor_frame, w_motor_frame, thickness, extr, diagonal, frame_type, extr*1.1, 5,m_frame_open*2,layer_h);
 
 	      if (frame_type==1)
           intersection() {
@@ -139,7 +139,7 @@ difference() {
             translate([0,diagonal/2,0])
               rotate([90,0,180])
                 teardrop(diagonal, 13, true, truncate = true);
-            translate([0,W_roller+extr/2,0])
+           # translate([0,W_roller+extr/2,h_motor_frame/2])
              cube([diagonal,extr,h_motor_frame+5], center=true);    
 //screw holes
 if (h_motor_frame<(extr*1.5)){
@@ -213,7 +213,7 @@ module motor_joint ()
                   cylinder(r=L*sin(30), h=motor_d, $fn=3, center=false); 
               color ("red"){
               union(){
-                translate([-L*sin(30)+diagonal/3, w_fm-extr*cos(15), -motor_d/2]) 
+              #  translate([-L*sin(30)+diagonal/3-clear, w_fm-extr*cos(15)+2, -motor_d/2]) 
                   scale([1,-1,1]) 
                     cube([L*sin(30)-diagonal*0.7-clear/2, extr/2+motor_thickness*3/4, motor_d], center=false);
                     

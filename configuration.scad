@@ -1,3 +1,8 @@
+Magneto=1;
+
+ball_D=25.4/2;
+
+
 // OD = outside diameter, corner to corner.
 m3_nut_od = 6.1;
 m3_nut_radius = (m3_nut_od+0.2)/2;
@@ -14,7 +19,7 @@ m_frame_major = 3.8;
 m_frame_radius=m_frame_major/2;
 m_frame_clr=0.3;
 m_frame_open=m_frame_radius+m_frame_clr*2;
-m_frame_cap=(8+m_frame_clr)/2;
+m_frame_cap=(7.2+m_frame_clr)/2;
 m_frame_nut=(8+m_frame_clr)/2;
 
 // NEMA17 stepper motors.
@@ -46,9 +51,9 @@ diagonal=extr*sqrt(2);
 
 clear = 0.4;
 // corner parametrs
-frame_thickness=6; //thickness for frame sheets
+frame_thickness=10; //thickness for frame sheets
 bracket = 5;
-frame_type=10; //type 0 solid. 10 for solid with mottors on the top or 1 for sepparate parts
+frame_type=0; //type 0 solid. 10 for solid with mottors on the top or 1 for sepparate parts
 radius = thickness+cos(30)*diagonal/2+frame_thickness;
 slot_hole=3;
 
@@ -61,7 +66,16 @@ h_base=7;
 H_roller=diagonal/2+extr_clr*2+h_base;
 W_roller=diagonal/2+extr_clr+m3_radius;
 rod_offset=W_roller+5; //(25)
-layer_h=0.35;
+layer_h=0.4;
+
+//effector
+separation = H_roller*2;
+R_od = 33; //effector offset
+R_id=20;
+height = 9;
+cone_r1 = height/2;
+cone_r2 = 5.5;
+eff_offset=R_od;
 
 //dimmensions calculations for frame_motor (some trigonometry)
 
